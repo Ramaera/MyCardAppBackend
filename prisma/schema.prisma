@@ -1,0 +1,112 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  // previewFeatures = []
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+model CardUser {
+  id                      String       @id @default(cuid())
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+  name                    String?
+  mobileNumber            String?      @unique
+  email                   String?      @unique
+  password                String?
+  emailVerified           Boolean      @default(false)
+  verificationToken       String?
+  verificationTokenExpiry DateTime?
+  Role                    Role?        @default(USER)
+  address                 Json?
+  metaData                Json?
+  referralAgencyCode      String?
+  myCard                  myCard[]
+  CouponCode              CouponCode[]
+  Documents               Documents[]
+}
+
+model Documents {
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  id                   String    @id @default(cuid())
+  status               STATUS?   @default(PENDING)
+  title                String
+  url                  String
+  amount               Int?
+  utrNo                String?
+  myCard               myCard?   @relation(fields: [myCardId], references: [id])
+  documentApprovalDate DateTime?
+  myCardId             Int
+  user                 CardUser  @relation(fields: [cardUserId], references: [id])
+  cardUserId           String
+}
+
+model myCard {
+  id                 Int           @id @default(autoincrement())
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  cardNumber         String        @unique
+  isActive           Boolean       @default(false)
+  activationDate     DateTime?
+  cardActivationDate DateTime?
+  cardType           CARD_TYPE?
+  cardValue          Int?
+  maxDiscount        Int
+  cardValidity       Int
+  transaction        Transaction[]
+  cardHolderUser     CardUser      @relation(fields: [cardHolderUserId], references: [id])
+  cardHolderUserId   String
+  CouponCode         CouponCode[]
+  Documents          Documents[]
+}
+
+model Transaction {
+  id         Int          @id @default(autoincrement())
+  amount     Int
+  createdAt  DateTime     @default(now())
+  card       myCard       @relation(fields: [cardId], references: [id])
+  cardId     Int
+  metaData   Json?
+  CouponCode CouponCode[]
+}
+
+model CouponCode {
+  id               Int          @id @default(autoincrement()) @map("_id")
+  couponCode       String       @unique
+  isRedemmed       Boolean      @default(false)
+  card             myCard       @relation(fields: [myCardId], references: [id])
+  discount         Int?
+  Transaction      Transaction? @relation(fields: [transactionId], references: [id])
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  transactionId    Int?
+  cardHolderUser   CardUser?    @relation(fields: [cardHolderUserId], references: [id])
+  cardHolderUserId String?
+  myCardId         Int
+}
+
+enum CARD_TYPE {
+  BRONZE // 1000
+  SILVER //2500
+  GOLD //5000
+  DIAMOND //10000
+}
+
+enum STATUS {
+  NOT_INITILAIZED
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Role {
+  USER
+  ADMIN
+}

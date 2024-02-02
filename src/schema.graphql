@@ -1,0 +1,259 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Authe {
+  """JWT access token"""
+  accessToken: JWT!
+
+  """JWT refresh token"""
+  refreshToken: JWT!
+  user: CardUser!
+}
+
+enum CARD_TYPE {
+  BRONZE
+  DIAMOND
+  GOLD
+  SILVER
+}
+
+type Card {
+  Documents: [PaymentDocument!]
+  cardHolderUser: CardUserData
+  cardNumber: String
+  cardType: CARD_TYPE
+  cardValidity: Int
+  cardValue: Int
+  id: Int!
+  isActive: Boolean
+  maxDiscount: Int
+  transaction: Transaction!
+}
+
+type CardUser {
+  Role: Role!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  email: String!
+  id: String!
+  mobileNumber: String!
+  myCard: [Card!]
+  name: String!
+  referralAgencyCode: String!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
+type CardUserData {
+  email: String!
+  mobileNumber: String!
+  name: String!
+  referralAgencyCode: String!
+}
+
+input ChangePasswordInputDTO {
+  newPassword: String!
+  oldPassword: String!
+}
+
+type CoupounCode {
+  """Example field (placeholder)"""
+  couponCode: String!
+}
+
+input CoupounCodeDto {
+  """Example field (placeholder)"""
+  cardNumber: String
+
+  """Example field (placeholder)"""
+  coupounCode: String!
+}
+
+input CreatePaymentDocumentInput {
+  """Payment Proof AMount"""
+  amount: Int!
+
+  """Id Of card User"""
+  cardUserId: String!
+
+  """Id Of Card FOr which Payment has been made"""
+  myCardId: Int!
+
+  """Title of Image"""
+  title: String!
+
+  """Url Of Image"""
+  url: String!
+
+  """Utr Number"""
+  utrNo: String!
+}
+
+input CreateUserDto {
+  address: [JSONObject!]
+  email: String!
+  metaData: [JSONObject!]
+  mobileNumber: String!
+  name: String!
+  referralAgencyCode: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input GenerateCardDTO {
+  """Example field (placeholder)"""
+  cardHolderId: String!
+
+  """Example field (placeholder)"""
+  cardType: CARD_TYPE!
+}
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
+
+"""
+A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction.
+"""
+scalar JWT
+
+input LoginInputDTO {
+  email: String!
+  password: String!
+}
+
+type Message {
+  """Example field (placeholder)"""
+  message: String!
+}
+
+type Mutation {
+  CreateUser(data: CreateUserDto!): CardUser!
+  changePasswordForUser(data: ChangePasswordInputDTO!): CardUser!
+  createCard(data: GenerateCardDTO!): Card!
+  createPaymentDocument(createPaymentDocumentInput: CreatePaymentDocumentInput!): PaymentDocument!
+  loginForUser(data: LoginInputDTO!): Authe!
+  refreshToken(token: JWT!): Token!
+  removeCard(id: Int!): Card!
+  removePaymentDocument(id: Int!): PaymentDocument!
+  removeTransaction(id: Int!): Transaction!
+  sendCoupounCode(data: sendCodeDTO!): CoupounCode!
+  submitCoupounCode(data: CoupounCodeDto!): Message!
+  updateCard(updateCardInput: UpdateCardInput!): Card!
+  updateCardUser(data: UpdateCardUserInput!): CardUser!
+  updatePaymentDocument(updatePaymentDocumentInput: UpdatePaymentDocumentInput!): PaymentDocument!
+  updatePaymentDocumentStatusByAdmin(data: UpdateDocumentStatusByAdmin!): PaymentDocument!
+  updateTransaction(updateTransactionInput: UpdateTransactionInput!): Transaction!
+}
+
+type PaymentDocument {
+  """Payment Proof AMount"""
+  amount: Int!
+
+  """Document Status"""
+  status: STATUS!
+
+  """Title of Image"""
+  title: String!
+
+  """Url Of Image"""
+  url: String!
+
+  """Utr Number"""
+  utrNo: String!
+}
+
+type Query {
+  AllpaymentDocuments: [Card!]!
+  CardDetails(cardNumber: String!): Card!
+  PaymentDocumetForCard(cardId: Int!): [PaymentDocument!]!
+  card(id: Int!): Card!
+  currentUserData: CardUser!
+  findCardHoldersInAgency(agencyCode: String!): [CardUser!]!
+  findCardOfaUser(userId: String!): [Card!]!
+  hello(name: String!): String!
+  helloWorld: String!
+  paymentDocument(id: Int!): PaymentDocument!
+  transaction(id: Int!): Transaction!
+  transactions: [Transaction!]!
+}
+
+"""User role"""
+enum Role {
+  ADMIN
+  USER
+}
+
+enum STATUS {
+  APPROVED
+  NOT_INITILAIZED
+  PENDING
+  REJECTED
+}
+
+type Token {
+  """JWT access token"""
+  accessToken: JWT!
+
+  """JWT refresh token"""
+  refreshToken: JWT!
+}
+
+type Transaction {
+  """Example field (placeholder)"""
+  coupounCode: String!
+}
+
+input UpdateCardInput {
+  """Example field (placeholder)"""
+  cardHolderId: String
+
+  """Example field (placeholder)"""
+  cardType: CARD_TYPE
+  id: Int!
+}
+
+input UpdateCardUserInput {
+  firstname: String
+  lastname: String
+}
+
+input UpdateDocumentStatusByAdmin {
+  id: String!
+  status: STATUS!
+}
+
+input UpdatePaymentDocumentInput {
+  amount: Int!
+
+  """Id Of card User"""
+  cardUserId: String
+  id: String!
+
+  """Id Of Card FOr which Payment has been made"""
+  myCardId: Int
+
+  """Title of Image"""
+  title: String
+  url: String!
+  utrNo: String!
+}
+
+input UpdateTransactionInput {
+  id: Int!
+}
+
+input sendCodeDTO {
+  """Example field (placeholder)"""
+  cardNumber: String!
+
+  """Example field (placeholder)"""
+  discountAmount: Int!
+}

@@ -1,0 +1,116 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table CardUser {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  name String
+  mobileNumber String [unique]
+  email String [unique]
+  password String
+  emailVerified Boolean [not null, default: false]
+  verificationToken String
+  verificationTokenExpiry DateTime
+  Role Role [default: 'USER']
+  address Json
+  metaData Json
+  referralAgencyCode String
+  myCard myCard [not null]
+  CouponCode CouponCode [not null]
+  Documents Documents [not null]
+}
+
+Table Documents {
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  id String [pk]
+  status STATUS [default: 'PENDING']
+  title String [not null]
+  url String [not null]
+  amount Int
+  utrNo String
+  myCard myCard
+  documentApprovalDate DateTime
+  myCardId Int [not null]
+  user CardUser [not null]
+  cardUserId String [not null]
+}
+
+Table myCard {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  cardNumber String [unique, not null]
+  isActive Boolean [not null, default: false]
+  activationDate DateTime
+  cardActivationDate DateTime
+  cardType CARD_TYPE
+  cardValue Int
+  maxDiscount Int [not null]
+  cardValidity Int [not null]
+  transaction Transaction [not null]
+  cardHolderUser CardUser [not null]
+  cardHolderUserId String [not null]
+  CouponCode CouponCode [not null]
+  Documents Documents [not null]
+}
+
+Table Transaction {
+  id Int [pk, increment]
+  amount Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  card myCard [not null]
+  cardId Int [not null]
+  metaData Json
+  CouponCode CouponCode [not null]
+}
+
+Table CouponCode {
+  id Int [pk, increment]
+  couponCode String [unique, not null]
+  isRedemmed Boolean [not null, default: false]
+  card myCard [not null]
+  discount Int
+  Transaction Transaction
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  transactionId Int
+  cardHolderUser CardUser
+  cardHolderUserId String
+  myCardId Int [not null]
+}
+
+Enum CARD_TYPE {
+  BRONZE
+  SILVER
+  GOLD
+  DIAMOND
+}
+
+Enum STATUS {
+  NOT_INITILAIZED
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+Enum Role {
+  USER
+  ADMIN
+}
+
+Ref: Documents.myCardId > myCard.id
+
+Ref: Documents.cardUserId > CardUser.id
+
+Ref: myCard.cardHolderUserId > CardUser.id
+
+Ref: Transaction.cardId > myCard.id
+
+Ref: CouponCode.myCardId > myCard.id
+
+Ref: CouponCode.transactionId > Transaction.id
+
+Ref: CouponCode.cardHolderUserId > CardUser.id

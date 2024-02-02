@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    container_name: myCardDatabase
+    restart: always
+    expose:
+    - "5438"
+    ports:
+      - '5438:5432'
+    env_file:
+      - .env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+volumes:
+  postgres:
+    name: myCardDatabase
