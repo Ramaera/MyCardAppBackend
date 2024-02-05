@@ -32,7 +32,7 @@ export class TransactionsService {
           cardId: coupoun.myCardId,
         },
       });
-      return { message: 'PAyment SuccesssFull' };
+      return { message: 'Payment SuccesssFull' };
     } catch (error) {
       throw new Error(error);
     }
