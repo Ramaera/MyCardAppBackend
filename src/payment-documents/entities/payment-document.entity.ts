@@ -19,4 +19,7 @@ export class PaymentDocument {
 
   @Field(() => STATUS, { description: 'Document Status' })
   status: STATUS;
+
+  @Field(() => String, { description: 'Document Id' })
+  id: string;
 }

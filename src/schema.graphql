@@ -157,6 +157,9 @@ type PaymentDocument {
   """Payment Proof AMount"""
   amount: Int!
 
+  """Document Id"""
+  id: String!
+
   """Document Status"""
   status: STATUS!
 
