@@ -16,6 +16,7 @@ import { ChangePasswordInputDTO } from './dto/change-password.input';
 import { UpdateCardUserInput } from './dto/update-user.input';
 import { CreateUserDto } from './dto/create-user.input';
 import { Card } from 'src/card/entities/card.entity';
+import { Message } from 'src/transactions/entities/message.entity';
 
 @Resolver(() => CardUser)
 // @UseGuards(GqlAuthGuard)
@@ -44,6 +45,17 @@ export class UsersResolver {
   @Mutation(() => CardUser)
   async CreateUser(@Args('data') data: CreateUserDto) {
     return this.usersService.createUser(data);
+  }
+
+  @Mutation(() => Message)
+  async sendVerificationEmail(@Args('id') id: string) {
+    const user = await this.prisma.cardUser.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return this.usersService.sendVerificationEmail(user);
   }
 
   @UseGuards(GqlAuthGuard)

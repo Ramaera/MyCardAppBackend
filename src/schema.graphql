@@ -154,6 +154,7 @@ type Mutation {
   removePaymentDocument(id: Int!): PaymentDocument!
   removeTransaction(id: Int!): Transaction!
   sendCoupounCode(data: sendCodeDTO!): CoupounCode!
+  sendVerificationEmail(id: String!): Message!
   submitCoupounCode(data: CoupounCodeDto!): Message!
   updateCard(updateCardInput: UpdateCardInput!): Card!
   updateCardUser(data: UpdateCardUserInput!): CardUser!

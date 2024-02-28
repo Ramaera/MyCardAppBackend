@@ -47,7 +47,6 @@ export class UsersService {
         const errorValue = error.meta.target[0];
 
         throw new ConflictException(`${errorValue}   already used.`);
-        console.log;
       }
       throw new Error(error);
     }
@@ -98,6 +97,7 @@ export class UsersService {
     const expiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
     await this.updateVerificationToken(user, token, expiry);
     await this.mailService.sendEmailConfirmation(user, token);
+    return { message: 'Success' };
   }
 
   async updateVerificationToken(user: CardUser, token: string, expiry: Date) {
