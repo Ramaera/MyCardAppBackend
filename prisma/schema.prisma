@@ -21,7 +21,7 @@ model CardUser {
   email                   String?      @unique
   password                String?
   emailVerified           Boolean      @default(false)
-  verificationToken       String?
+  verificationToken       String?      @unique
   verificationTokenExpiry DateTime?
   Role                    Role?        @default(USER)
   address                 Json?
@@ -49,22 +49,22 @@ model Documents {
 }
 
 model myCard {
-  id                 Int           @id @default(autoincrement())
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
-  cardNumber         String        @unique
-  isActive           Boolean       @default(false)
-  activationDate     DateTime?
-  cardActivationDate DateTime?
-  cardType           CARD_TYPE?
-  cardValue          Int?
-  maxDiscount        Int
-  cardValidity       Int
-  transaction        Transaction[]
-  cardHolderUser     CardUser      @relation(fields: [cardHolderUserId], references: [id])
-  cardHolderUserId   String
-  CouponCode         CouponCode[]
-  Documents          Documents[]
+  id               Int           @id @default(autoincrement())
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  cardNumber       String        @unique
+  isActive         Boolean       @default(false)
+  activationDate   DateTime?
+  expiryDate       DateTime?
+  cardType         CARD_TYPE?
+  cardValue        Int?
+  maxDiscount      Int
+  cardValidity     Int
+  transaction      Transaction[]
+  cardHolderUser   CardUser      @relation(fields: [cardHolderUserId], references: [id])
+  cardHolderUserId String
+  CouponCode       CouponCode[]
+  Documents        Documents[]
 }
 
 model Transaction {

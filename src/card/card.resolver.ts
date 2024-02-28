@@ -3,6 +3,8 @@ import { CardService } from './card.service';
 import { Card } from './entities/card.entity';
 import { GenerateCardDTO } from './dto/generate-card.input';
 import { UpdateCardInput } from './dto/update-card.input';
+import { ActivateCardDto } from './dto/activate-card.input';
+import { Message } from 'src/transactions/entities/message.entity';
 
 @Resolver(() => Card)
 export class CardResolver {
@@ -17,6 +19,11 @@ export class CardResolver {
   // findAll() {
   //   return this.cardService.findAll();
   // }
+
+  @Mutation(() => Message)
+  activateTheCard(@Args('data') data: ActivateCardDto) {
+    return this.cardService.activateCard(data);
+  }
 
   @Query(() => Card, { name: 'card' })
   findOne(@Args('id', { type: () => Int }) id: number) {

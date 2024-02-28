@@ -26,6 +26,15 @@ export class TransactionsService {
         throw new Error('Wrong Coupoun Code');
       }
 
+      await this.prisma.couponCode.update({
+        where: {
+          couponCode: couponCodeData.coupounCode,
+        },
+        data: {
+          isRedemmed: true,
+        },
+      });
+
       const transact = await this.prisma.transaction.create({
         data: {
           amount: coupoun.discount,
@@ -84,14 +93,18 @@ export class TransactionsService {
 
     console.log('here');
 
-    // this.sendCode(checkCard.cardHolderUser, coupon.couponCode);
+    this.sendCode(
+      checkCard.cardHolderUser,
+      coupon.couponCode,
+      sendCode.discountAmount,
+    );
     console.log(coupon);
     return coupon;
   }
 
   //*********************** */ MAIL SERVICE:: Send Coupoun Code *******************
-  async sendCode(user, CoupounCode) {
-    await this.mailService.sendCoupounCode(user, CoupounCode);
+  async sendCode(user, CoupounCode, Amount) {
+    await this.mailService.sendCoupounCode(user, CoupounCode, Amount);
   }
 
   //*********************** */  VALIDATION OF COUPOUN CODE **********************
@@ -99,6 +112,7 @@ export class TransactionsService {
     const coupon = await this.prisma.couponCode.findUnique({
       where: {
         couponCode,
+        isRedemmed: false,
       },
       include: {
         card: true,

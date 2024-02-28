@@ -24,6 +24,12 @@ export class Card {
   maxDiscount: number;
 
   @Field({ nullable: true })
+  activationDate: Date;
+
+  @Field({ nullable: true })
+  expiryDate: Date;
+
+  @Field({ nullable: true })
   cardValidity: number;
 
   @Field()

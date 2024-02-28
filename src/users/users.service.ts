@@ -12,41 +12,30 @@ import { UpdateCardUserInput } from './dto/update-user.input';
 import { CreateUserDto } from './dto/create-user.input';
 import { Prisma, CardUser } from '@prisma/client';
 import * as crypto from 'crypto';
+import { MailerService } from 'src/mailer/mailer.service';
 @Injectable()
 export class UsersService {
   constructor(
     private prisma: PrismaService,
     private passwordService: PasswordService,
+    private mailService: MailerService,
   ) {}
 
   async createUser(data: CreateUserDto) {
     try {
-      const generateRandomString = (length) => {
-        var chars =
-          'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        var randomString = '';
-        for (var i = 0; i < length; i++) {
-          var randomNumber = Math.floor(Math.random() * chars.length);
-          randomString += chars.charAt(randomNumber);
-        }
-        return randomString;
-      };
-
-      // Converting it into Hash
-      const password = generateRandomString(8);
-      const hashedPassword = await this.passwordService.hashPassword(password);
       const user = await this.prisma.cardUser.create({
         data: {
           name: data.name,
           email: data.email,
           mobileNumber: data.mobileNumber,
           address: data.address,
-          password: hashedPassword,
           referralAgencyCode: data.referralAgencyCode,
         },
       });
-      console.log(password);
-      // this.sendVerificationEmail(user);
+
+      this.sendVerificationEmail(user);
+
+      console.log('send');
       //  Send My Card Details To my Mail Id
       return user;
     } catch (error) {
@@ -80,6 +69,9 @@ export class UsersService {
       where: {
         referralAgencyCode: agencyCode,
       },
+      include: {
+        myCard: true,
+      },
     });
   }
 
@@ -92,9 +84,6 @@ export class UsersService {
         myCard: true,
       },
     });
-
-    console.log('-->>>', user);
-
     return user;
   }
 
@@ -108,7 +97,7 @@ export class UsersService {
     const token = await this.generateVerificationToken();
     const expiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
     await this.updateVerificationToken(user, token, expiry);
-    // await this.mailService.sendEmailConfirmation(user, token);
+    await this.mailService.sendEmailConfirmation(user, token);
   }
 
   async updateVerificationToken(user: CardUser, token: string, expiry: Date) {
@@ -123,29 +112,7 @@ export class UsersService {
     });
   }
 
-  //************Expiry of Verification Token ***********************/
-  async isVerificationTokenExpired(user: CardUser): Promise<boolean> {
-    return (
-      user.verificationTokenExpiry && user.verificationTokenExpiry <= new Date()
-    );
-  }
-  // **************** UpdateVerification Status *******************************
-
-  async updateVerificationStatus(id: string, verified: boolean) {
-    const user = await this.prisma.cardUser.update({
-      where: {
-        id,
-      },
-      data: {
-        emailVerified: verified,
-        verificationToken: null,
-      },
-    });
-
-    // this.mailService.sendPassword(user.email, user.password);
-
-    return user;
-  }
+  // **************** UpdateEmailVerification Status *******************************
 
   updateUser(userId: string, newUserData: UpdateCardUserInput) {
     return this.prisma.cardUser.update({

@@ -74,7 +74,7 @@ export class PaymentDocumentsService {
       include: { Documents: true, cardHolderUser: true },
     });
   }
-  async updateDocumentStatusByAdmin(data) {
+  async updateDocumentStatusByAdmin(data: UpdateDocumentStatusByAdmin) {
     var approvalDocumentDate;
     if (data.status === 'APPROVED') {
       approvalDocumentDate = DateInGmt530();

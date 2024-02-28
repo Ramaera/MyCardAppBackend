@@ -28,7 +28,6 @@ export class UsersResolver {
   @UseGuards(GqlAuthGuard)
   @Query(() => CardUser)
   async currentUserData(@UserEntity() user: CardUser) {
-    console.log();
     return this.usersService.getUser(user.id);
   }
 

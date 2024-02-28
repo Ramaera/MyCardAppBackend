@@ -25,15 +25,13 @@ export class CardUser extends BaseModel {
   email: string;
   @Field()
   mobileNumber: string;
+  @Field()
+  emailVerified: boolean;
 
   @Field()
   Role: Role;
   @Field()
   referralAgencyCode: string;
-  // @Field(() => [GraphQLJSONObject], { nullable: true })
-  // address?: any[];
-  // @Field(() => [GraphQLJSONObject], { nullable: true })
-  // metaData?: any[];
   @HideField()
   password: string;
 

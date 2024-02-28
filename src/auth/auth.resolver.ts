@@ -20,6 +20,7 @@ export class AuthResolver {
 
   @Mutation(() => Authe)
   async loginForUser(@Args('data') { email, password }: LoginInputDTO) {
+    console.log('123456');
     const { accessToken, refreshToken } = await this.auth.login(
       email.toLowerCase(),
       password,

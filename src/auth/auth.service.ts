@@ -6,6 +6,7 @@ import {
   BadRequestException,
   ConflictException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -36,6 +37,13 @@ export class AuthService {
 
     if (!user) {
       throw new NotFoundException(`No user found for Email Id ${email}`);
+    }
+
+    console.log(user.myCard.length);
+    if (user.myCard.length <= 0) {
+      throw new ForbiddenException(
+        `You Cant Login Now, Please Buy Atleaset One Card To Login.`,
+      );
     }
 
     const passwordValid = await this.passwordService.validatePassword(

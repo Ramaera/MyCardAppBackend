@@ -11,7 +11,7 @@ Table CardUser {
   email String [unique]
   password String
   emailVerified Boolean [not null, default: false]
-  verificationToken String
+  verificationToken String [unique]
   verificationTokenExpiry DateTime
   Role Role [default: 'USER']
   address Json
@@ -45,7 +45,7 @@ Table myCard {
   cardNumber String [unique, not null]
   isActive Boolean [not null, default: false]
   activationDate DateTime
-  cardActivationDate DateTime
+  expiryDate DateTime
   cardType CARD_TYPE
   cardValue Int
   maxDiscount Int [not null]

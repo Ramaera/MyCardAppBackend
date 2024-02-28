@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input ActivateCardDto {
+  """Card Number"""
+  cardNumber: String!
+}
+
 type Authe {
   """JWT access token"""
   accessToken: JWT!
@@ -20,11 +25,13 @@ enum CARD_TYPE {
 
 type Card {
   Documents: [PaymentDocument!]
+  activationDate: DateTime
   cardHolderUser: CardUserData
   cardNumber: String
   cardType: CARD_TYPE
   cardValidity: Int
   cardValue: Int
+  expiryDate: DateTime
   id: Int!
   isActive: Boolean
   maxDiscount: Int
@@ -37,6 +44,7 @@ type CardUser {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
   email: String!
+  emailVerified: Boolean!
   id: String!
   mobileNumber: String!
   myCard: [Card!]
@@ -136,6 +144,7 @@ type Message {
 
 type Mutation {
   CreateUser(data: CreateUserDto!): CardUser!
+  activateTheCard(data: ActivateCardDto!): Message!
   changePasswordForUser(data: ChangePasswordInputDTO!): CardUser!
   createCard(data: GenerateCardDTO!): Card!
   createPaymentDocument(createPaymentDocumentInput: CreatePaymentDocumentInput!): PaymentDocument!
